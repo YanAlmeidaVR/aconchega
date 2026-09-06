@@ -22,10 +22,10 @@ const MOCK_DATA = {
     { id: 2, cpf: "987.654.321-00", nomeHospede: "Maria Santos", telefone: "(21) 99876-5432" },
   ],
   quartos: [
-    { id: 1, numeroQuarto: 101, tipoQuarto: "SINGLE" as const, precoPorNoite: 150.0, quartoStatus: "DISPONIVEL" as const },
-    { id: 2, numeroQuarto: 102, tipoQuarto: "DELUXE" as const, precoPorNoite: 350.0, quartoStatus: "OCUPADO" as const },
-    { id: 3, numeroQuarto: 201, tipoQuarto: "SINGLE" as const, precoPorNoite: 150.0, quartoStatus: "DISPONIVEL" as const },
-    { id: 4, numeroQuarto: 202, tipoQuarto: "SUITE" as const, precoPorNoite: 500.0, quartoStatus: "MANUTENCAO" as const },
+    { id: 1, numeroQuarto: 101, tipoQuarto: "SOLTEIRO" as const, precoPorNoite: 150.0, quartoStatus: "DISPONIVEL" as const },
+    { id: 2, numeroQuarto: 102, tipoQuarto: "CASAL" as const, precoPorNoite: 350.0, quartoStatus: "OCUPADO" as const },
+    { id: 3, numeroQuarto: 201, tipoQuarto: "SOLTEIRO" as const, precoPorNoite: 150.0, quartoStatus: "DISPONIVEL" as const },
+    { id: 4, numeroQuarto: 202, tipoQuarto: "TRIPLA" as const, precoPorNoite: 500.0, quartoStatus: "MANUTENÇÃO" as const },
   ],
   reservas: [
     {

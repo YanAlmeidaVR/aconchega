@@ -32,9 +32,9 @@ export function QuartoDialog({ quarto, open, onOpenChange, onSuccess }: QuartoDi
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     numeroQuarto: "",
-    tipoQuarto: "SINGLE" as "SINGLE" | "DOUBLE" | "SUITE" | "DELUXE",
+    tipoQuarto: "SOLTEIRO" as "SOLTEIRO" | "CASAL" | "TRIPLA",
     precoPorNoite: "",
-    quartoStatus: "DISPONIVEL" as "DISPONIVEL" | "OCUPADO" | "MANUTENCAO" | "LIMPEZA",
+    quartoStatus: "DISPONIVEL" as "DISPONIVEL" | "OCUPADO" | "MANUTENÇÃO",
   })
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export function QuartoDialog({ quarto, open, onOpenChange, onSuccess }: QuartoDi
     } else {
       setFormData({
         numeroQuarto: "",
-        tipoQuarto: "SINGLE",
+        tipoQuarto: "SOLTEIRO",
         precoPorNoite: "",
         quartoStatus: "DISPONIVEL",
       })
@@ -122,10 +122,9 @@ export function QuartoDialog({ quarto, open, onOpenChange, onSuccess }: QuartoDi
                   <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="SINGLE">Single (Solteiro)</SelectItem>
-                  <SelectItem value="DOUBLE">Double (Casal)</SelectItem>
-                  <SelectItem value="SUITE">Suíte (Tripla)</SelectItem>
-                  <SelectItem value="DELUXE">Deluxe</SelectItem>
+                  <SelectItem value="SOLTEIRO">Solteiro</SelectItem>
+                  <SelectItem value="CASAL">Casal</SelectItem>
+                  <SelectItem value="TRIPLA">Tripla</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -154,8 +153,7 @@ export function QuartoDialog({ quarto, open, onOpenChange, onSuccess }: QuartoDi
                 <SelectContent>
                   <SelectItem value="DISPONIVEL">Disponível</SelectItem>
                   <SelectItem value="OCUPADO">Ocupado</SelectItem>
-                  <SelectItem value="MANUTENCAO">Manutenção</SelectItem>
-                  <SelectItem value="LIMPEZA">Limpeza</SelectItem>
+                  <SelectItem value="MANUTENÇÃO">Manutenção</SelectItem>
                 </SelectContent>
               </Select>
             </div>

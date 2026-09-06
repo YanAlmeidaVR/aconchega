@@ -14,22 +14,19 @@ interface QuartosGridProps {
 const statusColors = {
   DISPONIVEL: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
   OCUPADO: "bg-rose-500/10 text-rose-700 dark:text-rose-400",
-  MANUTENCAO: "bg-amber-500/10 text-amber-700 dark:text-amber-400",
-  LIMPEZA: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
+  "MANUTENÇÃO": "bg-amber-500/10 text-amber-700 dark:text-amber-400",
 }
 
 const statusLabels = {
   DISPONIVEL: "Disponível",
   OCUPADO: "Ocupado",
-  MANUTENCAO: "Manutenção",
-  LIMPEZA: "Limpeza",
+  "MANUTENÇÃO": "Manutenção",
 }
 
 const tipoLabels = {
-  SINGLE: "Single",
-  DOUBLE: "Double",
-  SUITE: "Suíte",
-  DELUXE: "Deluxe",
+  SOLTEIRO: "Solteiro",
+  CASAL: "Casal",
+  TRIPLA: "Tripla",
 }
 
 export function QuartosGrid({ quartos, onEdit }: QuartosGridProps) {

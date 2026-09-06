@@ -43,9 +43,9 @@ export interface Hospede {
 export interface Quarto {
   id: number
   numeroQuarto: number
-  tipoQuarto: 'SINGLE' | 'DOUBLE' | 'SUITE' | 'DELUXE'
+  tipoQuarto: 'SOLTEIRO' | 'CASAL' | 'TRIPLA'
   precoPorNoite: number
-  quartoStatus: 'DISPONIVEL' | 'OCUPADO' | 'MANUTENCAO' | 'LIMPEZA'
+  quartoStatus: 'DISPONIVEL' | 'OCUPADO' | 'MANUTENÇÃO'
 }
 
 export interface Reserva {
@@ -60,27 +60,6 @@ export interface Reserva {
   statusChave: 'NAO_DEVOLVIDA' | 'DEVOLVIDA'
 }
 
-// Mapear tipos de quarto
-const mapTipoQuarto = (tipo: string): 'SINGLE' | 'DOUBLE' | 'SUITE' | 'DELUXE' => {
-  const map: Record<string, 'SINGLE' | 'DOUBLE' | 'SUITE' | 'DELUXE'> = {
-    'SOLTEIRO': 'SINGLE',
-    'CASAL': 'DOUBLE',
-    'TRIPLA': 'SUITE',
-  }
-  return map[tipo.toUpperCase()] || 'SINGLE'
-}
-
-// Mapear status de quarto
-const mapQuartoStatus = (status: string): 'DISPONIVEL' | 'OCUPADO' | 'MANUTENCAO' | 'LIMPEZA' => {
-  const map: Record<string, 'DISPONIVEL' | 'OCUPADO' | 'MANUTENCAO' | 'LIMPEZA'> = {
-    'DISPONIVEL': 'DISPONIVEL',
-    'OCUPADO': 'OCUPADO',
-    'MANUTENÇÃO': 'MANUTENCAO',
-    'MANUTENCAO': 'MANUTENCAO',
-  }
-  return map[status.toUpperCase()] || 'DISPONIVEL'
-}
-
 // Converter Hospede do backend para frontend
 const convertHospede = (hospede: HospedeBackend): Hospede => ({
   id: hospede.id,
@@ -93,9 +72,9 @@ const convertHospede = (hospede: HospedeBackend): Hospede => ({
 const convertQuarto = (quarto: QuartoBackend): Quarto => ({
   id: quarto.id,
   numeroQuarto: quarto.numero,
-  tipoQuarto: mapTipoQuarto(quarto.tipo),
+  tipoQuarto: quarto.tipo as Quarto['tipoQuarto'],
   precoPorNoite: quarto.precoPorNoite,
-  quartoStatus: mapQuartoStatus(quarto.status),
+  quartoStatus: quarto.status as Quarto['quartoStatus'],
 })
 
 // Converter Reserva do backend para frontend (já vem no formato correto!)
@@ -114,28 +93,28 @@ const convertReserva = (reserva: ReservaBackend): Reserva => ({
 // Funções da API
 export const api = {
   async getHospedes(): Promise<Hospede[]> {
-    const response = await fetch(`${API_URL}/pousada/hospedes`)
+    const response = await fetch(`${API_URL}/hospedes`)
     if (!response.ok) throw new Error('Falha ao buscar hóspedes')
     const data: HospedeBackend[] = await response.json()
     return data.map(convertHospede)
   },
 
   async getQuartos(): Promise<Quarto[]> {
-    const response = await fetch(`${API_URL}/pousada/quartos`)
+    const response = await fetch(`${API_URL}/quartos`)
     if (!response.ok) throw new Error('Falha ao buscar quartos')
     const data: QuartoBackend[] = await response.json()
     return data.map(convertQuarto)
   },
 
   async getReservas(): Promise<Reserva[]> {
-    const response = await fetch(`${API_URL}/pousada/reservas`)
+    const response = await fetch(`${API_URL}/reservas`)
     if (!response.ok) throw new Error('Falha ao buscar reservas')
     const data: ReservaBackend[] = await response.json()
     return data.map(convertReserva)
   },
 
   async createHospede(hospede: Omit<Hospede, 'id'>): Promise<Hospede> {
-    const response = await fetch(`${API_URL}/pousada/hospedes`, {
+    const response = await fetch(`${API_URL}/hospedes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -150,7 +129,7 @@ export const api = {
   },
 
   async updateHospede(id: number, hospede: Partial<Hospede>): Promise<Hospede> {
-    const response = await fetch(`${API_URL}/pousada/hospedes/${id}`, {
+    const response = await fetch(`${API_URL}/hospedes/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -165,26 +144,19 @@ export const api = {
   },
 
   async deleteHospede(id: number): Promise<void> {
-    const response = await fetch(`${API_URL}/pousada/hospedes/${id}`, {
+    const response = await fetch(`${API_URL}/hospedes/${id}`, {
       method: 'DELETE',
     })
     if (!response.ok) throw new Error('Falha ao deletar hóspede')
   },
 
   async createQuarto(quarto: Omit<Quarto, 'id'>): Promise<Quarto> {
-    const tipoMap: Record<string, string> = {
-      SINGLE: 'SOLTEIRO',
-      DOUBLE: 'CASAL',
-      SUITE: 'TRIPLA',
-      DELUXE: 'TRIPLA',
-    }
-
-    const response = await fetch(`${API_URL}/pousada/quartos`, {
+    const response = await fetch(`${API_URL}/quartos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         numero: quarto.numeroQuarto,
-        tipo: tipoMap[quarto.tipoQuarto],
+        tipo: quarto.tipoQuarto,
         precoPorNoite: quarto.precoPorNoite,
       }),
     })
@@ -193,15 +165,8 @@ export const api = {
     return convertQuarto(data)
   },
 
-  async updateQuartoStatus(numero: number, status: string): Promise<Quarto> {
-    const statusMap: Record<string, string> = {
-      DISPONIVEL: 'DISPONIVEL',
-      OCUPADO: 'OCUPADO',
-      MANUTENCAO: 'MANUTENÇÃO',
-      LIMPEZA: 'DISPONIVEL',
-    }
-
-    const response = await fetch(`${API_URL}/pousada/quartos/${numero}/status?status=${statusMap[status]}`, {
+  async updateQuartoStatus(numero: number, status: Quarto['quartoStatus']): Promise<Quarto> {
+    const response = await fetch(`${API_URL}/quartos/${numero}/status?status=${encodeURIComponent(status)}`, {
       method: 'PUT',
     })
     if (!response.ok) throw new Error('Falha ao atualizar status do quarto')
@@ -210,7 +175,7 @@ export const api = {
   },
 
   async checkIn(reservaId: number): Promise<Reserva> {
-    const response = await fetch(`${API_URL}/pousada/reservas/${reservaId}/check-in`, {
+    const response = await fetch(`${API_URL}/reservas/${reservaId}/check-in`, {
       method: 'PUT',
     })
     if (!response.ok) throw new Error('Falha ao fazer check-in')
@@ -219,7 +184,7 @@ export const api = {
   },
 
   async checkOut(reservaId: number): Promise<Reserva> {
-    const response = await fetch(`${API_URL}/pousada/reservas/${reservaId}/check-out`, {
+    const response = await fetch(`${API_URL}/reservas/${reservaId}/check-out`, {
       method: 'PUT',
     })
     if (!response.ok) throw new Error('Falha ao fazer check-out')
@@ -228,7 +193,7 @@ export const api = {
   },
 
   async devolverChave(reservaId: number): Promise<Reserva> {
-    const response = await fetch(`${API_URL}/pousada/reservas/${reservaId}/devolucao-chave`, {
+    const response = await fetch(`${API_URL}/reservas/${reservaId}/devolucao-chave`, {
       method: 'PUT',
     })
     if (!response.ok) throw new Error('Falha ao devolver chave')
@@ -237,7 +202,7 @@ export const api = {
   },
 
   async processarPagamento(reservaId: number, metodoPagamento: string = 'DINHEIRO'): Promise<Reserva> {
-    const response = await fetch(`${API_URL}/pousada/reservas/${reservaId}/pagamento?metodoPagamento=${metodoPagamento}`, {
+    const response = await fetch(`${API_URL}/reservas/${reservaId}/pagamento?metodoPagamento=${metodoPagamento}`, {
       method: 'PUT',
     })
     if (!response.ok) throw new Error('Falha ao processar pagamento')
@@ -246,7 +211,7 @@ export const api = {
   },
 
   async cancelarReserva(reservaId: number): Promise<Reserva> {
-    const response = await fetch(`${API_URL}/pousada/reservas/${reservaId}/cancelar`, {
+    const response = await fetch(`${API_URL}/reservas/${reservaId}/cancelar`, {
       method: 'PUT',
     })
     if (!response.ok) throw new Error('Falha ao cancelar reserva')
@@ -261,7 +226,7 @@ export const api = {
   dataCheckOut: string
   metodoPagamento?: string
 }): Promise<Reserva> {
-  const response = await fetch(`${API_URL}/pousada/reservas`, {
+  const response = await fetch(`${API_URL}/reservas`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
