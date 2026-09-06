@@ -23,7 +23,7 @@ export function Relatorios({ taxaOcupacao }: RelatoriosProps) {
       return
     }
 
-    if (new Date(dataFim) < new Date(dataInicio)) {
+    if (dataFim < dataInicio) {
       alert("Data final deve ser posterior à data inicial")
       return
     }
@@ -31,7 +31,7 @@ export function Relatorios({ taxaOcupacao }: RelatoriosProps) {
     setLoading(true)
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/pousada/reservas/receita?inicio=${dataInicio}&fim=${dataFim}`
+        `${process.env.NEXT_PUBLIC_API_URL}/reservas/receita?inicio=${dataInicio}&fim=${dataFim}`
       )
       if (!response.ok) throw new Error("Erro ao buscar receita")
       const valor = await response.json()
@@ -48,6 +48,11 @@ export function Relatorios({ taxaOcupacao }: RelatoriosProps) {
     setDataInicio("")
     setDataFim("")
     setReceita(null)
+  }
+
+  const formatDate = (date: string) => {
+    const [year, month, day] = date.split("-")
+    return `${day}/${month}/${year}`
   }
 
   return (
@@ -126,8 +131,7 @@ export function Relatorios({ taxaOcupacao }: RelatoriosProps) {
                 </p>
                 {dataInicio && dataFim && (
                   <p className="mt-2 text-sm text-muted-foreground">
-                    De {new Date(dataInicio).toLocaleDateString("pt-BR")} até{" "}
-                    {new Date(dataFim).toLocaleDateString("pt-BR")}
+                    De {formatDate(dataInicio)} até {formatDate(dataFim)}
                   </p>
                 )}
               </div>

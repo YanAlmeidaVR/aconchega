@@ -40,7 +40,8 @@ export function ReservasList({
   onCancelar,
 }: ReservasListProps) {
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("pt-BR")
+    const [year, month, day] = date.split("-")
+    return `${day}/${month}/${year}`
   }
 
   return (
